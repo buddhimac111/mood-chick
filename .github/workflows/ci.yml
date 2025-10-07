@@ -1,0 +1,124 @@
+name: CI
+
+on:
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
+
+jobs:
+    lint-and-build:
+        name: Lint and Build
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [18.x, 20.x]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            - name: Get pnpm store directory
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+            - name: Cache pnpm dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ${{ env.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
+
+            - name: Cache Next.js build
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.npm
+                      ${{ github.workspace }}/.next/cache
+                  key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+                  restore-keys: |
+                      ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run ESLint
+              run: pnpm run lint
+
+            - name: Type check
+              run: pnpm run type-check
+
+            - name: Build project
+              run: pnpm run build
+              env:
+                  NODE_ENV: production
+
+            - name: Upload build artifacts
+              if: matrix.node-version == '20.x'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-output
+                  path: .next
+                  retention-days: 7
+
+    code-quality:
+        name: Code Quality Checks
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20.x
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Check for console statements
+              run: |
+                  echo "Checking for console statements..."
+                  ! git grep -n "console\." -- "*.ts" "*.tsx" "*.js" "*.jsx" || echo "Warning: Console statements found"
+              continue-on-error: true
+
+            - name: Check for TODO comments
+              run: |
+                  echo "Checking for TODO comments..."
+                  git grep -n "TODO" -- "*.ts" "*.tsx" "*.js" "*.jsx" || echo "No TODOs found"
+              continue-on-error: true
+
+    status-check:
+        name: All Checks Passed
+        runs-on: ubuntu-latest
+        needs: [lint-and-build, code-quality]
+        if: always()
+
+        steps:
+            - name: Check if all jobs passed
+              if: needs.lint-and-build.result != 'success' || needs.code-quality.result != 'success'
+              run: |
+                  echo "One or more checks failed"
+                  exit 1
+
+            - name: All checks passed
+              run: echo "✅ All CI checks passed successfully!"
