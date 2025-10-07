@@ -4,6 +4,6 @@
 echo "🐥 Running pre-commit checks..."
 
 echo "🔍 Linting..."
-npm run type-check || exit 1
+npm run lint || exit 1
 
-echo "✅ Type checking passed!"
+echo "✅ Linting passed!"
