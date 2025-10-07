@@ -1,0 +1,12 @@
+echo "🐥 Running pre-push checks..."
+
+echo "🔍 Linting..."
+npm run lint || exit 1
+
+echo "📝 Type checking..."
+npm run type-check || exit 1
+
+echo "🏗️  Building project..."
+npm run build || exit 1
+
+echo "✅ All checks passed! Pushing..."
