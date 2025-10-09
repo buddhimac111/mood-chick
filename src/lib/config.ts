@@ -7,12 +7,15 @@ export const config = {
     apiUrl:
       process.env.HUGGINGFACE_API_URL ||
       "https://api-inference.huggingface.co/models/google/flan-t5-small",
+    timeout: 30000, // 30 seconds timeout
+    maxRetries: 3,
+    retryDelay: 1000, // 1 second
   },
 
   // App Configuration
   app: {
-    name: "MoodChick",
-    description: "AI-Powered Caption Generator",
+    name: process.env.NEXT_PUBLIC_APP_NAME || "MoodChick",
+    description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || "AI-Powered Caption Generator",
     version: "1.0.0",
   },
 
@@ -21,6 +24,11 @@ export const config = {
     animationDuration: 300,
     maxRetries: 3,
     defaultTimeout: 10000,
+  },
+
+  // Rate Limiting
+  rateLimit: {
+    requestsPerMinute: parseInt(process.env.RATE_LIMIT_REQUESTS_PER_MINUTE || "60"),
   },
 };
 
