@@ -1,6 +1,6 @@
 echo "🐥 Running pre-commit checks..."
 
 echo "🔍 Linting..."
-npm run lint || exit 1
+bun run lint || exit 1
 
 echo "✅ Linting passed!"

@@ -1,12 +1,10 @@
-echo "🐥 Running pre-push checks..."
+echo "🧪 Running tests before push..."
+bun test:ci
 
-echo "🔍 Linting..."
-npm run lint || exit 1
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed! Push aborted."
+  echo "💡 Fix the failing tests or use --no-verify to skip this hook."
+  exit 1
+fi
 
-echo "📝 Type checking..."
-npm run type-check || exit 1
-
-echo "🏗️  Building project..."
-npm run build || exit 1
-
-echo "✅ All checks passed! Pushing..."
+echo "✅ All tests passed!"
