@@ -183,4 +183,4 @@ describe("POST /api/generate-caption", () => {
         expect(data.mood).toBe("happy");
         expect(data).toHaveProperty("caption");
     });
-}, 120000); // 2 minute timeout for all tests to account for delays
+});
