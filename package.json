@@ -9,6 +9,7 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "test": "echo \"No tests yet\" && exit 0",
+    "test:huggingface": "node scripts/test-huggingface.js",
     "prepare": "husky"
   },
   "dependencies": {
