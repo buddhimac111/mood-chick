@@ -19,50 +19,38 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Setup Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
               with:
-                  node-version: ${{ matrix.node-version }}
+                  bun-version: latest
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: 8
-
-            - name: Get pnpm store directory
-              shell: bash
-              run: |
-                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-            - name: Cache pnpm dependencies
+            - name: Cache Bun dependencies
               uses: actions/cache@v4
               with:
-                  path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  path: ~/.bun/install/cache
+                  key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
                   restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                      ${{ runner.os }}-bun-
 
             - name: Cache Next.js build
               uses: actions/cache@v4
               with:
-                  path: |
-                      ~/.npm
-                      ${{ github.workspace }}/.next/cache
-                  key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+                  path: ${{ github.workspace }}/.next/cache
+                  key: ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
                   restore-keys: |
-                      ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+                      ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-
 
             - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+              run: bun install
 
             - name: Run ESLint
-              run: pnpm run lint
+              run: bun run lint
 
             - name: Type check
-              run: pnpm run type-check
+              run: bun run type-check
 
             - name: Build project
-              run: pnpm run build
+              run: bun run build
               env:
                   NODE_ENV: production
 
@@ -82,18 +70,13 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
               with:
-                  node-version: 20.x
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v3
-              with:
-                  version: 8
+                  bun-version: latest
 
             - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: Check for console statements
               run: |

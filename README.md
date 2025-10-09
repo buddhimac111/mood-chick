@@ -33,8 +33,7 @@ Select your mood, click generate, and let AI craft the perfect line for your pos
 
 ### Prerequisites
 
--   Node.js >= 18
--   pnpm (recommended) or npm/yarn
+-   [Bun](https://bun.sh) >= 1.0 (recommended) or Node.js >= 18
 -   HuggingFace API key (optional, required for AI integration)
 
 ### Installation
@@ -49,11 +48,7 @@ Select your mood, click generate, and let AI craft the perfect line for your pos
 2. Install dependencies:
 
     ```bash
-    pnpm install
-    # or
-    npm install
-    # or
-    yarn install
+    bun install
     ```
 
 3. Set up environment variables (create `.env.local`):
@@ -65,29 +60,27 @@ Select your mood, click generate, and let AI craft the perfect line for your pos
 4. Run the development server:
 
     ```bash
-    pnpm dev
-    # or
-    npm run dev
+    bun dev
     ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 6. (Optional) Run tests to ensure everything is working:
     ```bash
-    pnpm test
+    bun test
     ```
 
 ### Available Scripts
 
--   `pnpm dev` - Start development server with Turbopack
--   `pnpm build` - Build for production
--   `pnpm start` - Start production server
--   `pnpm lint` - Run ESLint
--   `pnpm type-check` - Run TypeScript type checking
--   `pnpm test` - Run all tests
--   `pnpm test:watch` - Run tests in watch mode
--   `pnpm test:coverage` - Run tests with coverage report
--   `pnpm test:ci` - Run tests in CI mode with coverage
+-   `bun dev` - Start development server with Turbopack
+-   `bun build` - Build for production
+-   `bun start` - Start production server
+-   `bun lint` - Run ESLint
+-   `bun type-check` - Run TypeScript type checking
+-   `bun test` - Run all tests
+-   `bun test:watch` - Run tests in watch mode
+-   `bun test:coverage` - Run tests with coverage report
+-   `bun test:ci` - Run tests in CI mode with coverage
 
 ## Testing
 
@@ -105,7 +98,7 @@ MoodChick has a comprehensive test suite to ensure code quality and prevent regr
 #### Run All Tests
 
 ```bash
-pnpm test
+bun test
 ```
 
 #### Run Tests in Watch Mode
@@ -113,13 +106,13 @@ pnpm test
 Perfect for development - tests re-run automatically when files change:
 
 ```bash
-pnpm test:watch
+bun test:watch
 ```
 
 #### Run Tests with Coverage Report
 
 ```bash
-pnpm test:coverage
+bun test:coverage
 ```
 
 This generates a coverage report in the `coverage/` directory. Open `coverage/lcov-report/index.html` in your browser to see detailed coverage information.
@@ -127,7 +120,7 @@ This generates a coverage report in the `coverage/` directory. Open `coverage/lc
 #### Run Tests in CI Mode
 
 ```bash
-pnpm test:ci
+bun test:ci
 ```
 
 ### Test Structure
@@ -440,15 +433,15 @@ We welcome contributions! Please follow these guidelines:
 
 1. **Fork the repository**
 2. **Clone your fork**
-3. **Install dependencies:** `pnpm install`
+3. **Install dependencies:** `bun install`
 4. **Create a branch:** `git checkout -b feature/amazing-feature`
 5. **Make your changes**
 6. **Run checks locally:**
     ```bash
-    pnpm lint
-    pnpm type-check
-    pnpm test
-    pnpm build
+    bun lint
+    bun type-check
+    bun test
+    bun build
     ```
 7. **Write tests for your changes** (if applicable)
 8. **Commit your changes:** Git hooks will run automatically
@@ -492,7 +485,7 @@ git commit -m "changes"
 -   **Testing:** Jest + React Testing Library
 -   **CI/CD:** GitHub Actions
 -   **Git Hooks:** Husky
--   **Package Manager:** pnpm (or bun)
+-   **Package Manager:** Bun
 
 ## Project Structure
 
@@ -537,7 +530,7 @@ mood-chick/
 
 ```bash
 # Reinstall Husky
-pnpm run prepare
+bun run prepare
 
 # Check hook permissions
 chmod +x .husky/pre-commit
@@ -548,23 +541,23 @@ chmod +x .husky/pre-push
 
 ```bash
 # Run checks locally to debug
-pnpm lint
-pnpm type-check
-pnpm test
-pnpm build
+bun lint
+bun type-check
+bun test
+bun build
 ```
 
 ### Tests Failing
 
 ```bash
 # Run tests in watch mode to debug
-pnpm test:watch
+bun test:watch
 
 # Run specific test file
-pnpm test path/to/test.test.ts
+bun test path/to/test.test.ts
 
 # Run with coverage to see what's missing
-pnpm test:coverage
+bun test:coverage
 ```
 
 ### Build Errors
@@ -575,10 +568,10 @@ rm -rf .next
 
 # Reinstall dependencies
 rm -rf node_modules
-pnpm install
+bun install
 
 # Rebuild
-pnpm build
+bun build
 ```
 
 ## License
