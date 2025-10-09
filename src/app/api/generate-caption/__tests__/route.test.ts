@@ -4,9 +4,11 @@
 
 import { POST } from "../route";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createMockRequest = (body: any) => {
     return {
         json: async () => body,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 };
 
@@ -99,6 +101,7 @@ describe("POST /api/generate-caption", () => {
             json: async () => {
                 throw new Error("Invalid JSON");
             },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any;
         const response = await POST(request);
 

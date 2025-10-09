@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import Home from "../page";
 
 // Mock fetch globally
@@ -463,6 +462,7 @@ describe("Home Page", () => {
         });
 
         it("should properly disable generate button while loading", async () => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let resolveFunction: any;
             (global.fetch as jest.Mock).mockImplementation(
                 () =>

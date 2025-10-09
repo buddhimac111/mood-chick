@@ -4,16 +4,20 @@ import { TextEncoder, TextDecoder } from "util";
 import { ReadableStream } from "stream/web";
 
 // Polyfill TextEncoder/TextDecoder for Next.js
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 global.TextEncoder = TextEncoder as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 global.TextDecoder = TextDecoder as any;
 
 // Polyfill ReadableStream for Next.js Edge Runtime
 if (!global.ReadableStream) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ReadableStream = ReadableStream as any;
 }
 
 // Mock crypto.randomUUID for Next.js
 if (!global.crypto) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.crypto = {} as any;
 }
 if (!global.crypto.randomUUID) {
@@ -52,6 +56,7 @@ global.IntersectionObserver = class IntersectionObserver {
         return [];
     }
     unobserve() {}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
 // Mock clipboard API - only in browser environments
@@ -69,6 +74,7 @@ if (typeof navigator !== "undefined" && !navigator.clipboard) {
 // Suppress console errors in tests (optional)
 const originalError = console.error;
 beforeAll(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     console.error = (...args: any[]) => {
         if (
             typeof args[0] === "string" &&

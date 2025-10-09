@@ -1,0 +1,13 @@
+# Coverage reports
+coverage/
+
+# Build outputs
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.tsbuildinfo
+
