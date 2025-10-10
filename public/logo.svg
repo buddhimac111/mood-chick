@@ -1,0 +1,42 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="0.5" stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="chick-gradient" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FEF3C7"/>
+      <stop offset="1" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="60" fill="url(#bg-gradient)"/>
+  
+  <!-- Chick body -->
+  <ellipse cx="60" cy="70" rx="25" ry="30" fill="url(#chick-gradient)"/>
+  
+  <!-- Chick head -->
+  <circle cx="60" cy="45" r="20" fill="url(#chick-gradient)"/>
+  
+  <!-- Eyes -->
+  <circle cx="55" cy="42" r="3" fill="#1F2937"/>
+  <circle cx="65" cy="42" r="3" fill="#1F2937"/>
+  
+  <!-- Beak -->
+  <path d="M60 48L55 52L65 52L60 48Z" fill="#F59E0B"/>
+  
+  <!-- Wings -->
+  <ellipse cx="50" cy="65" rx="8" ry="15" fill="url(#chick-gradient)" transform="rotate(-20 50 65)"/>
+  <ellipse cx="70" cy="65" rx="8" ry="15" fill="url(#chick-gradient)" transform="rotate(20 70 65)"/>
+  
+  <!-- Sparkles -->
+  <path d="M25 25L27 27L25 29L23 27L25 25Z" fill="white" opacity="0.8"/>
+  <path d="M95 30L97 32L95 34L93 32L95 30Z" fill="white" opacity="0.8"/>
+  <path d="M30 90L32 92L30 94L28 92L30 90Z" fill="white" opacity="0.8"/>
+  <path d="M90 95L92 97L90 99L88 97L90 95Z" fill="white" opacity="0.8"/>
+  
+  <!-- Text -->
+  <text x="60" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">MoodChick</text>
+</svg>
