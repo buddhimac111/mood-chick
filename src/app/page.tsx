@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 import {
   Copy,
   RefreshCw,
@@ -14,6 +15,8 @@ import {
   Check,
   Download,
   Share2,
+  AlertCircle,
+  X,
 } from "lucide-react";
 
 interface Mood {
@@ -77,11 +80,23 @@ export default function Home() {
   const [generationCount, setGenerationCount] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [recentCaptions, setRecentCaptions] = useState<string[]>([]);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // First load animation
+    const timer = setTimeout(() => {
+      setIsFirstLoad(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const generateCaption = async () => {
     if (!selectedMood) return;
 
     setIsGenerating(true);
+    setError(null);
+    
     try {
       const response = await axios.post("/api/generate-caption", {
         mood: selectedMood.id,
@@ -96,6 +111,11 @@ export default function Home() {
       setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {
       console.error("Error generating caption:", error);
+      const errorMessage = axios.isAxiosError(error) 
+        ? error.response?.data?.message || "Network error occurred"
+        : "An unexpected error occurred";
+      
+      setError(errorMessage);
       setGeneratedCaption(
         "Sorry, couldn't generate a caption right now. Please try again!"
       );
@@ -150,14 +170,27 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
       <div className="container mx-auto px-4 py-8">
+        {/* Error Message */}
+        {error && (
+          <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center animate-fade-in-up">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+            <span className="text-red-700 dark:text-red-300">{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="ml-auto text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className={`text-center mb-12 transition-all duration-1000 ${isFirstLoad ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
           <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-8 h-8 text-purple-600 mr-3" />
+            <Sparkles className={`w-8 h-8 text-purple-600 mr-3 transition-all duration-1000 delay-200 ${isFirstLoad ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`} />
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               MoodChick
             </h1>
-            <Sparkles className="w-8 h-8 text-pink-600 ml-3" />
+            <Sparkles className={`w-8 h-8 text-pink-600 ml-3 transition-all duration-1000 delay-200 ${isFirstLoad ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`} />
           </div>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">
             Select your mood and let AI craft the perfect social media caption
@@ -174,12 +207,12 @@ export default function Home() {
         </div>
 
         {/* Mood Selection */}
-        <div className="max-w-4xl mx-auto mb-12">
+        <div className={`max-w-4xl mx-auto mb-12 transition-all duration-1000 delay-300 ${isFirstLoad ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
           <h2 className="text-2xl font-semibold text-center mb-8 text-gray-800 dark:text-gray-200">
             How are you feeling today?
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {moods.map((mood) => (
+            {moods.map((mood, index) => (
               <button
                 key={mood.id}
                 onClick={() => setSelectedMood(mood)}
@@ -187,7 +220,8 @@ export default function Home() {
                   selectedMood?.id === mood.id
                     ? `${mood.bgColor} ring-2 ring-offset-2 ring-purple-500 shadow-lg scale-105`
                     : `${mood.bgColor} hover:shadow-md`
-                }`}
+                } ${isFirstLoad ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}
+                style={{ transitionDelay: `${index * 100 + 500}ms` }}
               >
                 <div className={`${mood.color} text-center`}>
                   <div className="flex justify-center mb-3">{mood.icon}</div>
@@ -219,6 +253,11 @@ export default function Home() {
               )}
             </button>
           </div>
+        )}
+
+        {/* Loading State */}
+        {isGenerating && !generatedCaption && (
+          <LoadingSkeleton />
         )}
 
         {/* Generated Caption */}
@@ -293,7 +332,7 @@ export default function Home() {
 
         {/* Recent Captions */}
         {recentCaptions.length > 0 && (
-          <div className="max-w-4xl mx-auto mt-12">
+          <div id="recent-captions" className="max-w-4xl mx-auto mt-12">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
                 Recent Captions
@@ -318,6 +357,21 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Floating Action Button */}
+        {recentCaptions.length > 0 && (
+          <div className="fixed bottom-6 right-6 z-40">
+            <button
+              onClick={() => {
+                const element = document.getElementById('recent-captions');
+                element?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+            >
+              <Heart className="w-6 h-6" />
+            </button>
           </div>
         )}
 
