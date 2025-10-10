@@ -1,3 +1,4 @@
+import axios, { AxiosError } from 'axios';
 import { config, moodPrompts } from './config';
 
 export interface HuggingFaceResponse {
@@ -55,27 +56,29 @@ export class HuggingFaceService {
    */
   private async makeRequestWithRetry(payload: Record<string, unknown>, attempt: number = 1): Promise<string> {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-      const response = await fetch(this.apiUrl, {
-        method: 'POST',
+      const response = await axios.post<HuggingFaceResponse[]>(this.apiUrl, payload, {
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
+        timeout: this.timeout,
       });
 
-      clearTimeout(timeoutId);
+      const data = response.data;
+      
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        throw new Error('Invalid response from HuggingFace API');
+      }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+      return data[0].generated_text || 'No caption generated';
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
         
         // Handle rate limiting
-        if (response.status === 429) {
-          const retryAfter = response.headers.get('Retry-After');
+        if (axiosError.response?.status === 429) {
+          const retryAfter = axiosError.response.headers['retry-after'];
           const delay = retryAfter ? parseInt(retryAfter) * 1000 : this.retryDelay * attempt;
           
           if (attempt < this.maxRetries) {
@@ -85,27 +88,20 @@ export class HuggingFaceService {
         }
 
         // Handle model loading
-        if (response.status === 503 && errorData.estimated_time) {
-          if (attempt < this.maxRetries) {
+        if (axiosError.response?.status === 503) {
+          const errorData = axiosError.response.data as any;
+          if (errorData?.estimated_time && attempt < this.maxRetries) {
             await this.sleep(errorData.estimated_time * 1000);
             return this.makeRequestWithRetry(payload, attempt + 1);
           }
         }
 
-        throw new Error(`HuggingFace API error: ${response.status} - ${errorData.error || response.statusText}`);
-      }
+        // Handle timeout
+        if (axiosError.code === 'ECONNABORTED') {
+          throw new Error('Request timeout - HuggingFace API took too long to respond');
+        }
 
-      const data: HuggingFaceResponse[] = await response.json();
-      
-      if (!data || !Array.isArray(data) || data.length === 0) {
-        throw new Error('Invalid response from HuggingFace API');
-      }
-
-      return data[0].generated_text || 'No caption generated';
-
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('Request timeout - HuggingFace API took too long to respond');
+        throw new Error(`HuggingFace API error: ${axiosError.response?.status} - ${axiosError.response?.data?.error || axiosError.message}`);
       }
 
       if (attempt < this.maxRetries && !(error instanceof Error && error.message.includes('API key'))) {

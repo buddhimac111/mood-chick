@@ -21,7 +21,7 @@ export class RateLimiter {
    */
   isAllowed(identifier: string): { allowed: boolean; remaining: number; resetTime: number } {
     const now = Date.now();
-    const windowMs = 60 * 1000; // 1 minute
+    const windowMs = config.rateLimit.windowMs;
     const entry = rateLimitStore.get(identifier);
 
     if (!entry || now > entry.resetTime) {
@@ -97,5 +97,5 @@ export const rateLimiter = new RateLimiter();
 if (typeof window === 'undefined') {
   setInterval(() => {
     rateLimiter.cleanup();
-  }, 5 * 60 * 1000);
+  }, config.rateLimit.cleanupInterval);
 }

@@ -2,7 +2,7 @@
 export const config = {
   // HuggingFace API Configuration
   huggingface: {
-    apiKey: process.env.HUGGINGFACE_API_KEY || "",
+    apiKey: process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY || process.env.HUGGINGFACE_API_KEY || "",
     model: process.env.HUGGINGFACE_MODEL || "google/flan-t5-small",
     apiUrl:
       process.env.HUGGINGFACE_API_URL ||
@@ -29,6 +29,8 @@ export const config = {
   // Rate Limiting
   rateLimit: {
     requestsPerMinute: parseInt(process.env.RATE_LIMIT_REQUESTS_PER_MINUTE || "60"),
+    windowMs: 60 * 1000, // 1 minute
+    cleanupInterval: 5 * 60 * 1000, // 5 minutes
   },
 };
 
