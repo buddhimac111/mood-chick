@@ -11,10 +11,16 @@ Select your mood, click generate, and let AI craft the perfect line for your pos
 
 -   🎨 Generate captions/quotes based on your mood (happy, sad, love, motivational, funny, etc.)
 -   🤖 AI-powered text generation using HuggingFace `flan-t5-small` (free, lightweight)
--   📋 Copy-to-clipboard functionality
+-   📋 Copy-to-clipboard functionality with visual feedback
 -   🔄 "Generate Again" button for endless inspiration
--   ⚡ Easily extendable with more moods or AI models
--   📱 Responsive design for desktop and mobile
+-   💾 Download captions as text files
+-   📤 Share captions using native Web Share API
+-   📚 Recent captions history with click-to-reuse
+-   🎭 Beautiful animations and smooth transitions
+-   🌙 Dark mode support with automatic theme detection
+-   📱 Fully responsive design for desktop and mobile
+-   ⚡ Fast loading with skeleton screens and optimized performance
+-   🔒 Privacy-first approach - no data storage
 -   🚀 Automated CI pipeline for code quality
 -   🔒 Pre-push git hooks to ensure quality before pushing
 -   🧪 Comprehensive test suite with 85%+ coverage
@@ -23,6 +29,8 @@ Select your mood, click generate, and let AI craft the perfect line for your pos
 ## Table of Contents
 
 -   [Getting Started](#getting-started)
+-   [Features](#features)
+-   [Pages](#pages)
 -   [Testing](#testing)
 -   [CI/CD Pipeline](#cicd-pipeline)
 -   [Git Hooks](#git-hooks)
@@ -69,6 +77,16 @@ Select your mood, click generate, and let AI craft the perfect line for your pos
     ```bash
     bun test
     ```
+
+## Pages
+
+MoodChick includes several pages for a complete user experience:
+
+-   **Home** (`/`) - Main caption generation interface with mood selection and AI-powered generation
+-   **About** (`/about`) - Learn about MoodChick, our mission, and technology stack
+-   **Contact** (`/contact`) - Get in touch with our team and find answers to common questions
+-   **Privacy** (`/privacy`) - Our privacy policy and data handling practices
+-   **404** - Custom error page for better user experience
 
 ### Available Scripts
 
