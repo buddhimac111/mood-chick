@@ -1,0 +1,10 @@
+echo "🧪 Running tests before push..."
+bun test:ci
+
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed! Push aborted."
+  echo "💡 Fix the failing tests or use --no-verify to skip this hook."
+  exit 1
+fi
+
+echo "✅ All tests passed!"
