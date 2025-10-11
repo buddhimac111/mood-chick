@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
     Copy,
     RefreshCw,
@@ -10,6 +11,7 @@ import {
     Frown,
     Zap,
     Laugh,
+    Info,
 } from "lucide-react";
 
 interface Mood {
@@ -115,6 +117,17 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
             <div className="container mx-auto px-4 py-8">
+                {/* Navigation */}
+                <div className="flex justify-end mb-6">
+                    <Link
+                        href="/about"
+                        className="inline-flex items-center text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors group"
+                    >
+                        <Info className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                        About Us
+                    </Link>
+                </div>
+
                 {/* Header */}
                 <div className="text-center mb-12">
                     <div className="flex items-center justify-center mb-4">
