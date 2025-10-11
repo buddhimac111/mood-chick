@@ -101,7 +101,9 @@ describe("AboutPage", () => {
 
     it("renders CTA button to try MoodChick", () => {
         render(<AboutPage />);
-        expect(screen.getByText("Ready to express your mood?")).toBeInTheDocument();
+        expect(
+            screen.getByText("Ready to express your mood?")
+        ).toBeInTheDocument();
         const ctaLink = screen.getByText("Try MoodChick Now").closest("a");
         expect(ctaLink).toHaveAttribute("href", "/");
     });
@@ -159,4 +161,3 @@ describe("AboutPage", () => {
         expect(twitterLink).toHaveAttribute("rel", "noopener noreferrer");
     });
 });
-
